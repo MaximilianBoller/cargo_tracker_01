@@ -230,10 +230,7 @@
             if (currentPolyline) {
                 map.removeLayer(currentPolyline);
             }
-
-            // Create a new polyline and add it to the map
-            const latLngs = myCoordinates.map(coord => [coord.lat, coord.lng]);
-            currentPolyline = L.polyline(latLngs, { color: 'blue' }).addTo(map);
+            currentPolyline = L.polyline(myCoordinates, { color: 'blue' }).addTo(map);
         }
 
 
