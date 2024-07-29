@@ -20,7 +20,7 @@
 
         #map {
             width: 100%;
-            height: 80vh;
+            height: 100vh;
             z-index: 99;
         }
 
@@ -147,10 +147,17 @@
             }
         }
 
+        let counter = 0;
+
+
         // Request current position and watch for updates
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(function (position) {
                 checkLocationInsideBoundaries(position);
+                counter += counter;
+                let nav = document.getElementById('nav');
+                    nav.innerText = counter;
+                
             }, handleError, {
                 enableHighAccuracy: true,
                 maximumAge: 0,
