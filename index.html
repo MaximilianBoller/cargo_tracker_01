@@ -156,7 +156,7 @@
                 checkLocationInsideBoundaries(position);
                 counter += 1;
                 let nav = document.getElementById('nav');
-                    nav.innerText = counter + L.control;
+                    nav.innerText = counter + position;
                 
             }, handleError, {
                 enableHighAccuracy: true,
