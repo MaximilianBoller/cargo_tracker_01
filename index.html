@@ -6,16 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaflet Tutorial</title>
 
-    <!-- leaflet css  -->
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@v0.74.0/dist/L.Control.Locate.min.css" />
-
-<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@v0.74.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.4/dist/L.Control.Locate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@v0.74.0/dist/L.Control.Locate.min.css" />
 
     <style>
         body {
@@ -30,8 +24,7 @@
             z-index: 99;
         }
 
-        
-        #info{
+        #info {
             position: absolute;
             top: .5rem;
             right: .5rem;
@@ -39,134 +32,139 @@
             border: solid red 1px;
             background-color: white;
             z-index: 100;
+            padding: 10px;
         }
 
-        #nav{
+        #nav {
             height: 20vh;
             position: absolute;
             bottom: 0;
             left: 0;
             background-color: blue;
             color: white;
-
         }
-
-
     </style>
-
-
 </head>
 
 <body>
+    <div id="info">Info</div>
+    <div id="map"></div>
+    <div id="nav">NAV</div>
 
-    <div id = "info">Info</div>
-    <div id = "map"></div>
-    <div id = "nav">NAV</div>
-</body>
-</html>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script src="https://npmcdn.com/leaflet-pip@1.1.0/leaflet-pip.min.js"></script>
 
-<!-- leaflet js  -->
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script>
+        // Map initialization
+        var map = L.map('map').setView([-25.1783, -57.3030], 18);
 
+        // OSM layer
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+        osm.addTo(map);
 
+        L.control.locate().addTo(map);
 
+        // Function to draw boundaries on the map
+        function drawBoundaries(boundaryData) {
+            var geoJsonLayer = L.geoJSON(boundaryData.boundaries, {
+                onEachFeature: function (feature, layer) {
+                    if (feature.properties && feature.properties.description) {
+                        layer.bindPopup(feature.properties.description);
+                    }
+                }
+            }).addTo(map);
 
-<script>
-    // Map initialization 
-    var map = L.map('map').setView([28.3949, 84.1240], 8);
+            // Fit the map to the boundaries
+            map.fitBounds(geoJsonLayer.getBounds());
 
-    //osm layer
-    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    });
-    osm.addTo(map);
-    
-    L.control.locate().addTo(map);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    function drawBoundaries(boundaryData) {
-      var geoJsonLayer = L.geoJSON(boundaryData.boundaries, {
-        onEachFeature: function (feature, layer) {
-          if (feature.properties && feature.properties.description) {
-            layer.bindPopup(feature.properties.description);
-          }
+            return geoJsonLayer;
         }
-      }).addTo(map);
 
-      // Fit the map to the boundaries
-      map.fitBounds(geoJsonLayer.getBounds());
-    }
-
-    // Example usage of the drawBoundaries function
-    var boundaryData = {
-      "boundaries": {
-        "type": "FeatureCollection",
-        "features": [
-          {
-            "type": "Feature",
-            "properties": {
-              "description": "Office Area"
-            },
-            "geometry": {
-              "type": "Polygon",
-              "coordinates": [
-                [
-                  [ -57.30309240311037, -25.17831786259947],
-                  [ -57.30298793469166, -25.17850531727601],
-                  [ -57.30277207354234, -25.178310938381586],
-                  [ -57.302968218169056, -25.17818928451121],
-                  [ -57.30309240311037, -25.17831786259947]
+        // Example usage of the drawBoundaries function
+        var boundaryData = {
+            "boundaries": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "description": "Office Area"
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [-57.30309240311037, -25.17831786259947],
+                                    [-57.30298793469166, -25.17850531727601],
+                                    [-57.30277207354234, -25.178310938381586],
+                                    [-57.302968218169056, -25.17818928451121],
+                                    [-57.30309240311037, -25.17831786259947]
+                                ]
+                            ]
+                        }
+                    },
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "description": "Garden Area"
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [-57.302728194306674, -25.178339543787434],
+                                    [-57.30288109781002, -25.17857037095652],
+                                    [-57.30266875811376, -25.178677138861946],
+                                    [-57.302507460989, -25.178492316163545],
+                                    [-57.302728194306674, -25.178339543787434]
+                                ]
+                            ]
+                        }
+                    }
                 ]
-              ]
             }
-          },
+        };
 
-          {
-            "type": "Feature",
-            "properties": {
-              "description": "Garden Area"
-            },
-            "geometry": {
-              "type": "Polygon",
-              "coordinates": [
-                [
-                  [-57.302728194306674, -25.178339543787434],
-                  [-57.30288109781002, -25.17857037095652],
-                  [-57.30266875811376, -25.178677138861946],
-                  [-57.302507460989, -25.178492316163545],
-                  [-57.302728194306674, -25.178339543787434]
-                ]
-              ]
+        // Draw the boundaries on the map and store the GeoJSON layer
+        var geoJsonLayer = drawBoundaries(boundaryData);
+
+        // Function to check if the current location is inside any boundary
+        function checkLocationInsideBoundaries(position) {
+            var latlng = [position.coords.latitude, position.coords.longitude];
+            var results = leafletPip.pointInLayer(latlng, geoJsonLayer);
+
+            if (results.length > 0) {
+                var description = results[0].feature.properties.description;
+                document.getElementById('info').innerHTML = description;
+            } else {
+                document.getElementById('info').innerHTML = 'You are not inside any defined area.';
             }
-          }
-        ]
-      }
-    };
+        }
 
-    // Draw the boundaries on the map
-    drawBoundaries(boundaryData);
+        // Request current position and watch for updates
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                checkLocationInsideBoundaries(position);
 
-</script>
+                // Update location every 10 seconds
+                setInterval(function () {
+                    navigator.geolocation.getCurrentPosition(checkLocationInsideBoundaries, handleError);
+                }, 10000);
+            }, handleError);
+        } else {
+            alert('Geolocation is not supported by your browser.');
+        }
+
+        // Function to handle errors
+        function handleError(error) {
+            console.error('Error getting GPS position: ', error);
+            alert('Unable to retrieve your location. Please check your device settings and try again.');
+        }
+    </script>
+</body>
+
+</html>
