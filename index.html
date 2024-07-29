@@ -154,7 +154,7 @@
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(function (position) {
                 checkLocationInsideBoundaries(position);
-                counter += counter;
+                counter += 1;
                 let nav = document.getElementById('nav');
                     nav.innerText = counter;
                 
