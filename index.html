@@ -156,7 +156,7 @@
                 checkLocationInsideBoundaries(position);
                 counter += 1;
                 let nav = document.getElementById('nav');
-                    nav.innerText = counter + " " + position.lng + " " + position.lat;
+                    nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude;
                 
             }, handleError, {
                 enableHighAccuracy: true,
