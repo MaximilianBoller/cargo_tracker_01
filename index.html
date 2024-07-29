@@ -166,16 +166,30 @@
         }
 
         let counter = 0;
+        let myCoordinates = [];
+
+
+        function drawMyCoordinates() {
+            const latLngs = myCoordinates.map(coord => [coord.lat, coord.lng]);
+            L.polyline(latLngs, { color: 'blue' }).addTo(map);
+        }
+
+
 
         // Request current position and watch for updates
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(function (position) {
+
+
+                myCoordinates.push(position.coords.longitude, position.coords.latitude);
 
                 if(routLoaded == true){
                     checkLocationInsideBoundaries(position);
                     counter += 1;
                     let nav = document.getElementById('nav');
                     nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude;
+
+                    drawMyCoordinates();
                 }
 
                 
