@@ -196,7 +196,7 @@
 
                     checkLocationInsideBoundaries(position);
                         counter += 1;
-                        nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude;
+                        nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude + " " + "v.001";
                         drawMyCoordinates(myCoordinates);
 // Wait 2 seconds before refreshing
                 }
@@ -205,7 +205,7 @@
                     maximumAge: 0,
                     timeout: 2000
                 });
-                
+
             }, 2000); 
             
         }else {
