@@ -192,14 +192,15 @@
                 myCoordinates.push({ lat: position.coords.latitude, lng: position.coords.longitude });
 
                 if (routLoaded == true) {
-                    checkLocationInsideBoundaries(position);
-                    counter += 1;
-                    let nav = document.getElementById('nav');
-                    nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude;
+
 
                     setTimeout(() => {
+                        checkLocationInsideBoundaries(position);
+                        counter += 1;
+                        let nav = document.getElementById('nav');
+                        nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude;
                         drawMyCoordinates(myCoordinates);
-                    }, 2000); // Wait 2 seconds before refreshing
+                    }, 5000); // Wait 2 seconds before refreshing
                 }
             }, handleError, {
                 enableHighAccuracy: true,
