@@ -45,6 +45,18 @@
             color: white;
             z-index: 200;
         }
+
+        #speed{
+            bottom: 0;
+            right: 0;
+            width: 2rem;
+            height: 2rem;
+            background-color: red;
+            color: white;
+            position: absolute;
+            z-index: 800;
+            padding: .5rem;
+        }
     </style>
 </head>
 
@@ -52,6 +64,10 @@
     <div id="info">Info</div>
     <div id="map"></div>
     <div id="nav">NAV</div>
+
+    <div id="speed">0kmh</div>
+
+
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -165,6 +181,42 @@
             }
         }
 
+
+
+
+
+
+
+
+
+
+
+        function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
+            const R = 6371000; // Radius of the Earth in meters
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c; // Distance in meters
+            return distance;
+        }
+
+        // Function to calculate the speed in km/h between two points that are 5 seconds apart
+        function calculateSpeed(lat1, lon1, lat2, lon2) {
+            const distanceInMeters = getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2);
+            const timeInSeconds = 5; // Time interval in seconds
+            const speedInMetersPerSecond = distanceInMeters / timeInSeconds;
+            const speedInKmPerHour = (speedInMetersPerSecond * 3600) / 1000; // Convert to km/h
+            return speedInKmPerHour;
+        }
+
+
+
+
+
         let counter = 0;
         let myCoordinates = [];
 
@@ -186,6 +238,9 @@
 
 
         let nav = document.getElementById('nav');
+        let speed = document.getElementById('speed');
+
+
 
  // Request current position every 5 seconds
  if (navigator.geolocation) {
@@ -198,6 +253,8 @@
                         counter += 1;
                         nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude + " " + "v.001";
                         drawMyCoordinates(myCoordinates);
+                        speed.innerText = calculateSpeed(myCoordinates[myCoordinates.length - 1][0],myCoordinates[myCoordinates.length - 1][1],  myCoordinates[myCoordinates.length][0], myCoordinates[myCoordinates.length][1])
+                        
                     }
                 }, handleError, {
                     enableHighAccuracy: true,
