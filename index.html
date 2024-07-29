@@ -147,14 +147,13 @@
 
         // Request current position and watch for updates
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
+            navigator.geolocation.watchPosition(function (position) {
                 checkLocationInsideBoundaries(position);
-
-                // Update location every 10 seconds
-                setInterval(function () {
-                    navigator.geolocation.getCurrentPosition(checkLocationInsideBoundaries, handleError);
-                }, 10000);
-            }, handleError);
+            }, handleError, {
+                enableHighAccuracy: true,
+                maximumAge: 0,
+                timeout: 27000
+            });
         } else {
             alert('Geolocation is not supported by your browser.');
         }
