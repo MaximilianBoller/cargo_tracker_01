@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@v0.74.0/dist/L.Control.Locate.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+
+
 
     <style>
         body {
@@ -57,16 +60,37 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
     <script src="https://npmcdn.com/leaflet-pip@1.1.0/leaflet-pip.min.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder@1.13.0/dist/Control.Geocoder.js"></script>
 
     <script>
         // Map initialization
         var map = L.map('map').setView([-25.1783, -57.3030], 18);
 
         // OSM layer
-        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        });
-        osm.addTo(map);
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                maxZoom: 19
+            }).addTo(map);
+
+
+
+        var waypoints = [
+            L.latLng(-25.178323382405303, -57.30293470444293), // São Paulo
+            L.latLng(--25.183726789759, -57.30754443450698)
+            //L.latLng(-26.88917, -48.68481)
+        ];
+
+        // Add the routing control to the map
+        var control = L.Routing.control({
+            waypoints: waypoints,
+            routeWhileDragging: false,
+            geocoder: L.Control.Geocoder.nominatim()
+        }).addTo(map);
+
+
+
 
         L.control.locate().addTo(map);
 
@@ -131,6 +155,25 @@
             }
         };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Draw the boundaries on the map and store the GeoJSON layer
         var geoJsonLayer = drawBoundaries(boundaryData);
 
@@ -148,7 +191,6 @@
         }
 
         let counter = 0;
-
 
         // Request current position and watch for updates
         if (navigator.geolocation) {
@@ -172,6 +214,10 @@
             console.error('Error getting GPS position: ', error);
             alert('Unable to retrieve your location. Please check your device settings and try again.');
         }
+
+
+
+
     </script>
 </body>
 
