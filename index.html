@@ -12,8 +12,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@v0.74.0/dist/L.Control.Locate.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
 
-
-
     <style>
         body {
             margin: 0;
@@ -45,7 +43,6 @@
             left: 0;
             background-color: blue;
             color: white;
-
             z-index: 200;
         }
     </style>
@@ -70,16 +67,13 @@
 
         // OSM layer
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                attribution: 'Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-                maxZoom: 19
-            }).addTo(map);
-
-
+            attribution: 'Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+            maxZoom: 19
+        }).addTo(map);
 
         var waypoints = [
             L.latLng(-25.178323382405303, -57.30293470444293), // São Paulo
             L.latLng(-25.183726789759, -57.30754443450698)
-            //L.latLng(-26.88917, -48.68481)
         ];
 
         // Add the routing control to the map
@@ -88,9 +82,6 @@
             routeWhileDragging: false,
             geocoder: L.Control.Geocoder.nominatim()
         }).addTo(map);
-
-
-
 
         L.control.locate().addTo(map);
 
@@ -155,25 +146,6 @@
             }
         };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         // Draw the boundaries on the map and store the GeoJSON layer
         var geoJsonLayer = drawBoundaries(boundaryData);
 
@@ -198,7 +170,7 @@
                 checkLocationInsideBoundaries(position);
                 counter += 1;
                 let nav = document.getElementById('nav');
-                    nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude;
+                nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude;
                 
             }, handleError, {
                 enableHighAccuracy: true,
@@ -214,6 +186,159 @@
             console.error('Error getting GPS position: ', error);
             alert('Unable to retrieve your location. Please check your device settings and try again.');
         }
+
+
+
+
+
+
+
+
+        // Define the radius and distance as variables
+        const CIRCLE_RADIUS = 50; // Radius of circles in meters
+        const DISTANCE_BETWEEN_POINTS = 50; // Distance between circles along the route in meters
+
+        // Utility function to calculate distance between two points
+        function distance(lat1, lon1, lat2, lon2) {
+            const R = 6371000; // Radius of the Earth in meters
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; // Distance in meters
+        }
+
+        // Function to calculate intermediate points every distanceBetweenPoints meters along the route
+        function getIntermediatePoints(route, distanceBetweenPoints) {
+            let points = [];
+            let accumulatedDistance = 0;
+
+            for (let i = 0; i < route.length - 1; i++) {
+                let start = route[i];
+                let end = route[i + 1];
+                let segmentDist = distance(start.lat, start.lng, end.lat, end.lng);
+
+                while (accumulatedDistance + segmentDist >= distanceBetweenPoints) {
+                    let remainingDist = distanceBetweenPoints - accumulatedDistance;
+                    let fraction = remainingDist / segmentDist;
+                    let lat = start.lat + fraction * (end.lat - start.lat);
+                    let lng = start.lng + fraction * (end.lng - start.lng);
+                    points.push([lat, lng]);
+
+                    accumulatedDistance = 0;
+                    segmentDist -= remainingDist;
+                    start = { lat: lat, lng: lng }; // Update start for next segment
+                }
+                accumulatedDistance += segmentDist;
+            }
+
+            return points;
+        }
+
+        // Function to create GeoJSON circles every distanceBetweenPoints meters along the route
+        function createCirclesAlongRoute(route, distanceBetweenPoints, radius) {
+            // Helper function to generate points around a circle
+            function generateCirclePoints(center, radius, numPoints = 32) {
+                let points = [];
+                const angleStep = 2 * Math.PI / numPoints;
+
+                for (let i = 0; i < numPoints; i++) {
+                    let angle = i * angleStep;
+                    let lat = center.lat + (radius / 6371000) * (180 / Math.PI) * Math.sin(angle);
+                    let lng = center.lng + (radius / 6371000) * (180 / Math.PI) * Math.cos(angle) / Math.cos(center.lat * Math.PI / 180);
+                    points.push([lng, lat]);
+                }
+
+                return points;
+            }
+
+            let intermediatePoints = getIntermediatePoints(route, distanceBetweenPoints);
+            let features = intermediatePoints.map(point => {
+                let circlePoints = generateCirclePoints({lat: point[0], lng: point[1]}, radius);
+
+                return {
+                    "type": "Feature",
+                    "properties": {
+                        "description": `Circle at ${point[0].toFixed(5)}, ${point[1].toFixed(5)}`
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [circlePoints]
+                    }
+                };
+            });
+
+            let data = {
+                "type": "FeatureCollection",
+                "features": features
+            };
+
+            // Debugging: log the feature collection
+            console.log("GeoJSON data for circles:", data);
+
+            return data;
+        }
+
+        // Draw the circles along the route
+        control.on('routesfound', function (e) {
+            var route = e.routes[0].coordinates.map(coord => ({ lat: coord.lat, lng: coord.lng }));
+            var boundaryData = createCirclesAlongRoute(route, DISTANCE_BETWEEN_POINTS, CIRCLE_RADIUS);
+
+            // Add circles to the map
+            L.geoJSON(boundaryData, {
+                style: function (feature) {
+                    return { color: "#ff0000", weight: 1, opacity: 0.6 };
+                },
+                onEachFeature: function (feature, layer) {
+                    if (feature.properties && feature.properties.description) {
+                        layer.bindPopup(feature.properties.description);
+                    }
+                }
+            }).addTo(geoJsonLayer);
+
+
+
+            // Log the GeoJSON data
+            console.log("GeoJSON data for circles:", boundaryData);
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
