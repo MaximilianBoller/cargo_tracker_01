@@ -254,6 +254,9 @@
                         nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude + " " + "v.004";
                         drawMyCoordinates(myCoordinates);
                         speed.innerText = "";
+                        console.log(calculateSpeed(myCoordinates[myCoordinates.length - 1]['lat'],myCoordinates[myCoordinates.length - 1]['lng'],  myCoordinates[myCoordinates.length]['lat'], myCoordinates[myCoordinates.length]['lng']));
+
+                        
                         speed.innerText = calculateSpeed(myCoordinates[myCoordinates.length - 1]['lat'],myCoordinates[myCoordinates.length - 1]['lng'],  myCoordinates[myCoordinates.length]['lat'], myCoordinates[myCoordinates.length]['lng']);
                         nav.innerText = calculateSpeed(myCoordinates[myCoordinates.length - 1]['lat'],myCoordinates[myCoordinates.length - 1]['lng'],  myCoordinates[myCoordinates.length]['lat'], myCoordinates[myCoordinates.length]['lng']);
 
