@@ -169,10 +169,21 @@
         let myCoordinates = [];
 
 
+        // Variable to hold the reference to the polyline
+        let currentPolyline = null;
+
+        // Function to draw coordinates, removing the old line first
         function drawMyCoordinates() {
+            // Remove the old polyline if it exists
+            if (currentPolyline) {
+                map.removeLayer(currentPolyline);
+            }
+
+            // Create a new polyline and add it to the map
             const latLngs = myCoordinates.map(coord => [coord.lat, coord.lng]);
-            L.polyline(latLngs, { color: 'blue' }).addTo(map);
+            currentPolyline = L.polyline(latLngs, { color: 'blue' }).addTo(map);
         }
+
 
 
 
