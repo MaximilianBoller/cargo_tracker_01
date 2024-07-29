@@ -187,29 +187,26 @@
 
 
 
-        // Request current position and watch for updates
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(function (position) {
+                myCoordinates.push({ lat: position.coords.latitude, lng: position.coords.longitude });
 
-
-                myCoordinates.push(position.coords.longitude, position.coords.latitude);
-
-                if(routLoaded == true){
+                if (routLoaded == true) {
                     checkLocationInsideBoundaries(position);
                     counter += 1;
                     let nav = document.getElementById('nav');
                     nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude;
 
-                    drawMyCoordinates();
+                    setTimeout(() => {
+                        drawMyCoordinates(myCoordinates);
+                    }, 2000); // Wait 2 seconds before refreshing
                 }
-
-                
             }, handleError, {
                 enableHighAccuracy: true,
                 maximumAge: 0,
                 timeout: 2000
             });
-        } else {
+        }else {
             alert('Geolocation is not supported by your browser.');
         }
 
