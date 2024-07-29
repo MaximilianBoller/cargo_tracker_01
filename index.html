@@ -84,4 +84,70 @@
     
     L.control.locate().addTo(map);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function drawBoundaries(boundaryData) {
+      var geoJsonLayer = L.geoJSON(boundaryData.boundaries, {
+        onEachFeature: function (feature, layer) {
+          if (feature.properties && feature.properties.description) {
+            layer.bindPopup(feature.properties.description);
+          }
+        }
+      }).addTo(map);
+
+      // Fit the map to the boundaries
+      map.fitBounds(geoJsonLayer.getBounds());
+    }
+
+    // Example usage of the drawBoundaries function
+    var boundaryData = {
+      "boundaries": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {
+              "description": "Example Area"
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [-0.1, 51.5],
+                  [-0.12, 51.5],
+                  [-0.12, 51.52],
+                  [-0.1, 51.52],
+                  [-0.1, 51.5]
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    };
+
+    // Draw the boundaries on the map
+    drawBoundaries(boundaryData);
+
 </script>
