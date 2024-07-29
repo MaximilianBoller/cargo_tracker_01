@@ -207,7 +207,7 @@
         // Function to calculate the speed in km/h between two points that are 5 seconds apart
         function calculateSpeed(lat1, lon1, lat2, lon2) {
             const distanceInMeters = getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2);
-            const timeInSeconds = 5; // Time interval in seconds
+            const timeInSeconds = 2; // Time interval in seconds
             const speedInMetersPerSecond = distanceInMeters / timeInSeconds;
             const speedInKmPerHour = (speedInMetersPerSecond * 3600) / 1000; // Convert to km/h
             return speedInKmPerHour;
@@ -265,9 +265,9 @@
                 }, handleError, {
                     enableHighAccuracy: true,
                     maximumAge: 0,
-                    timeout: 5000
+                    timeout: 2000
                 });
-            }, 5000); // Every 5 seconds
+            }, 2000); // Every 5 seconds
         } else {
             alert('Geolocation is not supported by your browser.');
         }
