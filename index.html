@@ -147,7 +147,10 @@
         };
 
         // Draw the boundaries on the map and store the GeoJSON layer
-        var geoJsonLayer = drawBoundaries(boundaryData);
+        //var geoJsonLayer = drawBoundaries(boundaryData);
+
+        let routLoaded = false;
+        var geoJsonLayer;
 
         // Function to check if the current location is inside any boundary
         function checkLocationInsideBoundaries(position) {
@@ -167,10 +170,14 @@
         // Request current position and watch for updates
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(function (position) {
-                checkLocationInsideBoundaries(position);
-                counter += 1;
-                let nav = document.getElementById('nav');
-                nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude;
+
+                if(routLoaded == true){
+                    checkLocationInsideBoundaries(position);
+                    counter += 1;
+                    let nav = document.getElementById('nav');
+                    nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude;
+                }
+
                 
             }, handleError, {
                 enableHighAccuracy: true,
@@ -287,7 +294,7 @@
             var boundaryData = createCirclesAlongRoute(route, DISTANCE_BETWEEN_POINTS, CIRCLE_RADIUS);
 
             // Add circles to the map
-            L.geoJSON(boundaryData, {
+            geoJsonLayer = L.geoJSON(boundaryData, {
                 style: function (feature) {
                     return { color: "#ff0000", weight: 1, opacity: 0.6 };
                 },
@@ -296,7 +303,9 @@
                         layer.bindPopup(feature.properties.description);
                     }
                 }
-            }).addTo(geoJsonLayer);
+            }).addTo(map);
+
+            routLoaded = true;
 
 
 
