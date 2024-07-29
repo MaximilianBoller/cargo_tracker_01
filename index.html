@@ -21,18 +21,33 @@
         body {
             margin: 0;
             padding: 0;
+            position: relative;
         }
 
         #map {
             width: 100%;
             height: 100vh;
         }
+
+        
+        #info{
+            position: absolute;
+            top: .5rem;
+            left: .5rem;
+            width: calc(100vw - 1rem);
+            border: solid red 1px;
+
+        }
+
+
     </style>
+
+
 </head>
 
 <body>
 
-    <div>Info</div>
+    <div id = "info">Info</div>
     <div id="map"></div>
 </body>
 </html>
