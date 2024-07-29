@@ -185,7 +185,7 @@
         }
 
 
-
+        let nav = document.getElementById('nav');
 
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(function (position) {
@@ -197,10 +197,9 @@
                     setTimeout(() => {
                         checkLocationInsideBoundaries(position);
                         counter += 1;
-                        let nav = document.getElementById('nav');
                         nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude;
                         drawMyCoordinates(myCoordinates);
-                    }, 5000); // Wait 2 seconds before refreshing
+                    }, 2000); // Wait 2 seconds before refreshing
                 }
             }, handleError, {
                 enableHighAccuracy: true,
