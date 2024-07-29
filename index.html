@@ -39,7 +39,15 @@
             border: solid red 1px;
             background-color: white;
             z-index: 100;
+        }
 
+        #nav{
+            height: 20vh;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background-color: blue;
+            color: white;
 
         }
 
@@ -52,13 +60,16 @@
 <body>
 
     <div id = "info">Info</div>
-    <div id="map"></div>
+    <div id = "map"></div>
+    <div id = "nav">NAV</div>
 </body>
 </html>
 
 <!-- leaflet js  -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+
+
 
 
 <script>
