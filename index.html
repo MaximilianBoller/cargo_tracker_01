@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@v0.74.0/dist/L.Control.Locate.min.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+
 
     <style>
         body {
@@ -39,11 +39,13 @@
         #nav {
             height: 20vh;
             position: absolute;
-            bottom: 0;
-            left: 0;
+            bottom: 50vh;
+            left: .5rem;
             background-color: blue;
             color: white;
             z-index: 200;
+            height: 2rem;
+            width: 2rem;
         }
 
         #speed{
@@ -56,6 +58,10 @@
             position: absolute;
             z-index: 800;
             padding: .5rem;
+        }
+
+        .leaflet-routing-container{
+            display: none;
         }
     </style>
 </head>
@@ -83,14 +89,17 @@
 
         // OSM layer
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+            attribution: '',
             maxZoom: 19
         }).addTo(map);
 
         var waypoints = [
             L.latLng(-25.178323382405303, -57.30293470444293), // São Paulo
-            L.latLng(-25.183726789759, -57.30754443450698)
+            L.latLng(-25.267586567900747, -57.48594439663179)
         ];
+
+
+
 
         // Add the routing control to the map
         var control = L.Routing.control({
@@ -98,6 +107,40 @@
             routeWhileDragging: false,
             geocoder: L.Control.Geocoder.nominatim()
         }).addTo(map);
+
+
+
+        // start and endpoint
+        var waypoints = control.getWaypoints();
+        //console.log('Waypoints: ', waypoints);
+
+        console.log('control: ', control);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         L.control.locate().addTo(map);
 
@@ -176,10 +219,24 @@
             if (results.length > 0) {
                 var description = results[0].feature.properties.description;
                 document.getElementById('info').innerHTML = description;
+                
             } else {
                 document.getElementById('info').innerHTML = 'You are not inside any defined area.';
             }
         }
+
+        function checkLocationInsideInstruction(position) {
+            var latlng = [position.coords.longitude, position.coords.latitude];
+            var results = leafletPip.pointInLayer(latlng, instructionJson);
+
+            if (results.length > 0) {
+                var description = results[0].feature.properties.description;
+                document.getElementById('info').innerHTML = description;
+            } else {
+                document.getElementById('info').innerHTML = 'You are not inside any defined area.';
+            }
+        }
+
 
 
 
@@ -328,10 +385,7 @@
             return points;
         }
 
-        // Function to create GeoJSON circles every distanceBetweenPoints meters along the route
-        function createCirclesAlongRoute(route, distanceBetweenPoints, radius) {
-            // Helper function to generate points around a circle
-            function generateCirclePoints(center, radius, numPoints = 32) {
+        function generateCirclePoints(center, radius, numPoints = 32) {
                 let points = [];
                 const angleStep = 2 * Math.PI / numPoints;
 
@@ -344,6 +398,13 @@
 
                 return points;
             }
+
+
+
+        // Function to create GeoJSON circles every distanceBetweenPoints meters along the route
+        function createCirclesAlongRoute(route, distanceBetweenPoints, radius) {
+            // Helper function to generate points around a circle
+
 
             let intermediatePoints = getIntermediatePoints(route, distanceBetweenPoints);
             let features = intermediatePoints.map(point => {
@@ -372,9 +433,223 @@
             return data;
         }
 
+
+
+
+
+
+
+
+
+
+
+
+        // get point on route at a distance from start
+
+        function getLatLngAtDistance(route, distanceToPoint) {
+            let accumulatedDistance = 0;
+
+            for (let i = 0; i < route.length - 1; i++) {
+                let start = route[i];
+                let end = route[i + 1];
+                let segmentDist = distance(start.lat, start.lng, end.lat, end.lng);
+
+                if (accumulatedDistance + segmentDist >= distanceToPoint) {
+                    let remainingDist = distanceToPoint - accumulatedDistance;
+                    let fraction = remainingDist / segmentDist;
+                    let lat = start.lat + fraction * (end.lat - start.lat);
+                    let lng = start.lng + fraction * (end.lng - start.lng);
+
+                    return { lat: lat, lng: lng };
+                }
+
+                accumulatedDistance += segmentDist;
+            }
+
+            // If the distance is greater than the length of the route, return the end of the route
+            return route[route.length - 1];
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        let instructionJson = {
+                "type": "FeatureCollection",
+                "features": []
+            };
+
+
+
+
+
+        function createInstruction(route, distanceToPoint, text) {
+            let longLat = getLatLngAtDistance(route, distanceToPoint);
+            let lat = longLat['lng'];
+            let lng = longLat['lat'];
+
+
+            let circlePoints100 = generateCirclePoints({lat: lng, lng: lat}, 100);
+
+            circlePoints100 = circlePoints100.map(coord => [coord[1], coord[0]]);
+
+            let instruction100 = {
+                    "type": "Feature",
+                    "properties": {
+                        "description": "In 100 meters " + text
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [circlePoints100]
+                    }
+                };
+
+            instructionJson['features'].push(instruction100);
+
+
+
+
+            let circlePoints50 = generateCirclePoints({lat: lng, lng: lat}, 50);
+
+            circlePoints50 = circlePoints50.map(coord => [coord[1], coord[0]]);
+
+            let instruction50 = {
+                    "type": "Feature",
+                    "properties": {
+                        "description": "In 50 meters " + text
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [circlePoints50]
+                    }
+                };
+
+            instructionJson['features'].push(instruction50);
+
+
+            let circlePoints10 = generateCirclePoints({lat: lng, lng: lat}, 10);
+
+            circlePoints10 = circlePoints10.map(coord => [coord[1], coord[0]]);
+
+            let instruction10 = {
+                    "type": "Feature",
+                    "properties": {
+                        "description": text
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [circlePoints10]
+                    }
+                };
+
+            instructionJson['features'].push(instruction10);
+
+
+            console.log(instructionJson);
+
+
+
+
+
+        }
+
+
+
+
+        function drawPolygonsWithPopups(){
+
+            instructionJson.features.forEach(feature => {
+                if (feature.geometry.type === 'Polygon') {
+                    // Extract coordinates and description
+                    let coordinates = feature.geometry.coordinates[0];
+                    let description = feature.properties.description;
+
+                    // Create the polygon on the map
+                    let polygon = L.polygon(coordinates, {
+                        color: 'blue', // Outline color
+                        fillColor: 'blue', // Fill color
+                        fillOpacity: 0.5 // Fill opacity
+                    }).addTo(map);
+
+                    // Bind the popup with the description
+                    polygon.bindPopup(description);
+                }
+            });
+
+            console.log("Draw Instructions");
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Draw the circles along the route
         control.on('routesfound', function (e) {
+
+
+
+
+
+
+
+
+
+
+
+            // After the control is added to the map, access the routes and selected route details
             var route = e.routes[0].coordinates.map(coord => ({ lat: coord.lat, lng: coord.lng }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             var boundaryData = createCirclesAlongRoute(route, DISTANCE_BETWEEN_POINTS, CIRCLE_RADIUS);
 
             // Add circles to the map
@@ -390,6 +665,86 @@
             }).addTo(map);
 
             routLoaded = true;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            var routes = e.routes;
+
+            if (routes.length > 0) {
+                var firstRoute = routes[0];
+                console.log('First route details:');
+                console.log('First route:', firstRoute);
+
+
+
+                console.log('Coordinates:', firstRoute.coordinates);
+                console.log('Instructions:', firstRoute.instructions);
+
+
+                let instructions = firstRoute.instructions;
+
+
+
+
+                let distanceCounter = 0;
+                for (let i = 0; i < instructions.length; i++) {
+                    let instruction = instructions[i];
+                    if(i == 0){
+                        createInstruction(route, 0, instruction.text);
+                    }else{
+                        createInstruction(route, distanceCounter + instructions[i-1].distance, instruction.text);
+                    }
+                    if(i != 0){
+                        distanceCounter += instructions[i-1].distance;
+                    }
+                }
+
+                drawPolygonsWithPopups();
+
+
+
+
+
+
+
+
+
+
+
+                console.log('Summary:', firstRoute.summary);
+                console.log('Waypoint indices:', firstRoute.waypointIndices);
+                console.log('Waypoints:', firstRoute.waypoints);
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -423,13 +778,16 @@
 
 
 
+/*
 
+            function speakText(text) {
+                var msg = new SpeechSynthesisUtterance(text);
+                window.speechSynthesis.speak(msg);
+            }
 
-
-
-
-
-
+            speakText("Hallo");
+*/
+        
 
 
 
