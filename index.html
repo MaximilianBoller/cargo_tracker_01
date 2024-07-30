@@ -219,7 +219,7 @@
             if (results.length > 0) {
                 var description = results[0].feature.properties.description;
                 document.getElementById('info').innerHTML = description;
-                
+
             } else {
                 document.getElementById('info').innerHTML = 'You are not inside any defined area.';
             }
@@ -307,6 +307,9 @@
 
                     if (routLoaded == true) {
                         checkLocationInsideBoundaries(position);
+                        checkLocationInsideInstruction(position);
+
+
                         counter += 1;
                         nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude + " " + "v.004";
                         drawMyCoordinates(myCoordinates);
