@@ -248,8 +248,9 @@
 
 
 
-        function speakText(text){
+        function speakText(text) {
             let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
             window.speechSynthesis.speak(utterance);
         }
 
