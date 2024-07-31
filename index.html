@@ -424,13 +424,13 @@
                 divElement.append(icon);
             }
 
-            if(element == 'accident'){
+            if(element == 'accidents'){
                 let icon = document.createElement('div');
                 icon.setAttribute('id', 'riskIcon');
                     icon.style.backgroundColor = backgroundColor;
                     icon.innerText = indc;
 
-                let divElement = document.getElementById('accident');
+                let divElement = document.getElementById('accidents');
                 divElement.innerHTML = "";
                 divElement.append(icon);
             }
@@ -452,73 +452,31 @@
         
 
         function valueToColor(value) {
-    // Ensure value is between 1 and 10
-    value = Math.min(10, Math.max(1, value));
-    
-    // Calculate hue value from green (120) to red (0) on the color wheel
-    var hue = (1 - (value / 10)) * 120;
-    
-    // Convert HSV to RGB
-    var rgb = hsvToRgb(hue / 360, 1, 1);
-    
-    // Convert RGB to hex color string
-    var color = rgbToHex(rgb[0], rgb[1], rgb[2]);
-    
-    return color;
-}
-
-// Function to convert HSV to RGB
-function hsvToRgb(h, s, v) {
-    var r, g, b, i, f, p, q, t;
-    if (s === 0) {
-        return [v, v, v];
-    }
-    h /= 60;
-    i = Math.floor(h);
-    f = h - i;
-    p = v * (1 - s);
-    q = v * (1 - s * f);
-    t = v * (1 - s * (1 - f));
-    switch (i) {
-        case 0:
-            r = v;
-            g = t;
-            b = p;
-            break;
-        case 1:
-            r = q;
-            g = v;
-            b = p;
-            break;
-        case 2:
-            r = p;
-            g = v;
-            b = t;
-            break;
-        case 3:
-            r = p;
-            g = q;
-            b = v;
-            break;
-        case 4:
-            r = t;
-            g = p;
-            b = v;
-            break;
-        default:
-            r = v;
-            g = p;
-            b = q;
-            break;
-    }
-    return [r * 255, g * 255, b * 255];
-}
-
-// Function to convert RGB to hex color string
-function rgbToHex(r, g, b) {
-    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-}
-
+            switch (value) {
+                case 1:
+                    return "#00FF00"; // Green
+                case 2:
+                    return "#33FF00"; // Slightly less green
+                case 3:
+                    return "#66FF00"; // More yellowish green
+                case 4:
+                    return "#99FF00"; // Yellowish green
+                case 5:
+                    return "#CCFF00"; // More yellow
+                case 6:
+                    return "#FFFF00"; // Yellow
+                case 7:
+                    return "#FFCC00"; // Yellow-orange
+                case 8:
+                    return "#FF9900"; // Orange
+                case 9:
+                    return "#FF6600"; // Reddish orange
+                case 10:
+                    return "#FF0000"; // Red
+                default:
+                    return "#FFFFFF"; // Default to white if value is out of range
+            }
+        }
 
 
 
