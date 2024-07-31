@@ -129,7 +129,43 @@
         }
 
         #riskIcon{
-            border: red solid 1px;
+
+            width: 2rem;
+            height: 2rem;
+            text-align: center;
+            border: solid lightgray 1px;
+            padding: .5rem;
+            border-radius: .25rem;
+            color: white;
+            background-color: lightgray;
+        }
+
+        #risk_indc{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            border: solid green 1px;
+            margin-top: .5rem;
+        }
+
+        #risk_summary{
+            border: solid red 1px;
+            height: 2rem;
+            overflow-y: scroll;
+        }
+
+        #indc_text_grid{
+            display: grid;
+            justify-content: center;
+            align-items: center;
+            justify-items: center;
+            row-gap: .5rem;
+            grid-template-columns: 1;
+            grid-template-rows: auto auto;
+            height: fit-content;
+            border: solid blue 1px;
         }
 
 
@@ -157,9 +193,28 @@
         <div id = "risk_summary">Summary</div>
 
         <div id = "risk_indc">
-            <div id = "accidents"></div>
-            <div id = "crime"></div>
-            <div id = "natcat"></div>
+
+
+            <div id = "indc_text_grid">
+                <div id = "crime">
+                    <div id = "riskIcon">5</div>
+                </div>
+                <div>Crime</div>
+            </div>
+
+            <div id = "indc_text_grid">
+                <div id = "accidents">
+                    <div id = "riskIcon">5</div>
+                </div>
+                <div>Accidents</div>
+            </div>
+
+            <div id = "indc_text_grid">
+                <div id = "natcat">
+                    <div id = "riskIcon">5</div>
+                </div>
+                <div>Natcat</div>
+            </div>
         </div>
     </div>
 
@@ -437,7 +492,7 @@
 
             if(element == 'natcat'){
                 let icon = document.createElement('div');
-                icon.setAttribute('id', 'riskIcon');
+                    icon.setAttribute('id', 'riskIcon');
                     icon.style.backgroundColor = backgroundColor;
                     icon.innerText = indc;
 
