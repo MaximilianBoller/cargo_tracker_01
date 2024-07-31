@@ -223,7 +223,7 @@
                 var description = results[results.length - 1].feature.properties.description;
                 document.getElementById('info').innerHTML = description;
 
-                if(currentBoundary != description){
+                if(currentBoundary !== description){
                     currentBoundary = description;
                     speakText(description);
                 }else{
@@ -252,7 +252,7 @@
                 document.getElementById('info').innerHTML = description;
 
 
-                if(currentInstruction != description){
+                if(currentInstruction !== description){
                     currentInstruction = description;
                     speakText(description);
                 }else{
