@@ -128,7 +128,7 @@
             color: black;
         }
 
-        #risk_icon{
+        #riskIcon{
             border: red solid 1px;
         }
 
@@ -373,19 +373,23 @@
                 let natcat = results[results.length - 1].feature.properties.natcat;
 
 
-                document.getElementById('risk_summary').innerHTML = description;
+                
 
                 /*
                 document.getElementById('crime').innerHTML = crime;
                 document.getElementById('accidents').innerHTML = accidents;
                 document.getElementById('natcat').innerHTML = natcat;
 */
-                addIconToRisk('crime', crime);
-                addIconToRisk('accidents', accidents);
-                addIconToRisk('natcat', natcat);
+
 
                 if(currentBoundary !== description){
                     currentBoundary = description;
+
+                    document.getElementById('risk_summary').innerHTML = description;
+                    addIconToRisk('crime', crime);
+                    addIconToRisk('accidents', accidents);
+                    addIconToRisk('natcat', natcat);
+
                     speakText(description);
                 }else{
 
@@ -415,9 +419,9 @@
                     icon.style.backgroundColor = backgroundColor;
                     icon.innerText = indc;
 
-                let crimeElement = document.getElementById('crime');
-                    crime.innerHTML = "";
-                    crimeElement.append(icon);
+                let divElement = document.getElementById('crime');
+                divElement.innerHTML = "";
+                divElement.append(icon);
             }
 
             if(element == 'accident'){
@@ -426,9 +430,9 @@
                     icon.style.backgroundColor = backgroundColor;
                     icon.innerText = indc;
 
-                let crimeElement = document.getElementById('accident');
-                    crime.innerHTML = "";
-                    crimeElement.append(icon);
+                let divElement = document.getElementById('accident');
+                divElement.innerHTML = "";
+                divElement.append(icon);
             }
 
             if(element == 'natcat'){
@@ -437,9 +441,9 @@
                     icon.style.backgroundColor = backgroundColor;
                     icon.innerText = indc;
 
-                let crimeElement = document.getElementById('natcat');
-                    crime.innerHTML = "";
-                    crimeElement.append(icon);
+                let divElement = document.getElementById('natcat');
+                divElement.innerHTML = "";
+                divElement.append(icon);
             }
 
         }
