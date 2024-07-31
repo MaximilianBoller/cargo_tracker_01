@@ -210,6 +210,7 @@
 
         let routLoaded = false;
         var geoJsonLayer;
+        let instructionGeoJsonLayer;
 
         // Function to check if the current location is inside any boundary
         function checkLocationInsideBoundaries(position) {
@@ -227,7 +228,7 @@
 
         function checkLocationInsideInstruction(position) {
             var latlng = [position.coords.longitude, position.coords.latitude];
-            var results = leafletPip.pointInLayer(latlng, instructionJson);
+            var results = leafletPip.pointInLayer(latlng, instructionGeoJsonLayer);
 
             if (results.length > 0) {
                 var description = results[0].feature.properties.description;
@@ -307,7 +308,17 @@
 
                     if (routLoaded == true) {
                         checkLocationInsideBoundaries(position);
+
+
+
+
+                        // hier fehler !!!!!!!!--------------------------------------------------------------
                         checkLocationInsideInstruction(position);
+
+
+
+
+
 
 
                         counter += 1;
@@ -505,7 +516,7 @@
 
             let circlePoints100 = generateCirclePoints({lat: lng, lng: lat}, 100);
 
-            circlePoints100 = circlePoints100.map(coord => [coord[1], coord[0]]);
+            //circlePoints100 = circlePoints100.map(coord => [coord[1], coord[0]]);
 
             let instruction100 = {
                     "type": "Feature",
@@ -525,7 +536,7 @@
 
             let circlePoints50 = generateCirclePoints({lat: lng, lng: lat}, 50);
 
-            circlePoints50 = circlePoints50.map(coord => [coord[1], coord[0]]);
+            //circlePoints50 = circlePoints50.map(coord => [coord[1], coord[0]]);
 
             let instruction50 = {
                     "type": "Feature",
@@ -543,7 +554,7 @@
 
             let circlePoints10 = generateCirclePoints({lat: lng, lng: lat}, 10);
 
-            circlePoints10 = circlePoints10.map(coord => [coord[1], coord[0]]);
+            //circlePoints10 = circlePoints10.map(coord => [coord[1], coord[0]]);
 
             let instruction10 = {
                     "type": "Feature",
@@ -570,7 +581,23 @@
 
 
 
-        function drawPolygonsWithPopups(){
+        function drawInstructionGeoJson(){
+
+
+            instructionGeoJsonLayer = L.geoJSON(instructionJson, {
+                style: function (feature) {
+                    return { color: "#3200fe", weight: 1, opacity: 0.6 };
+                },
+                onEachFeature: function (feature, layer) {
+                    if (feature.properties && feature.properties.description) {
+                        layer.bindPopup(feature.properties.description);
+                    }
+                }
+            }).addTo(map);
+
+
+
+/*
 
             instructionJson.features.forEach(feature => {
                 if (feature.geometry.type === 'Polygon') {
@@ -589,6 +616,7 @@
                     polygon.bindPopup(description);
                 }
             });
+            */
 
             console.log("Draw Instructions");
         }
@@ -713,14 +741,7 @@
                     }
                 }
 
-                drawPolygonsWithPopups();
-
-
-
-
-
-
-
+                drawInstructionGeoJson();
 
 
 
