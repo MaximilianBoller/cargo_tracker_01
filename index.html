@@ -153,9 +153,9 @@
         <div id = "risk_summary">Summary</div>
 
         <div id = "risk_indc">
-            <div></div>
-            <div></div>
-            <div></div>
+            <div id = "accidents"></div>
+            <div id = "crime"></div>
+            <div id = "natcat"></div>
         </div>
     </div>
 
@@ -185,7 +185,7 @@
 
 
             toggleRiskButton.addEventListener('click', function(){
-                console.log("HELLO");
+                console.log("toggle_risk");
 
                 riskToggle = !riskToggle;
 
@@ -364,7 +364,18 @@
 
             if (results.length > 0) {
                 var description = results[results.length - 1].feature.properties.description;
+                let crime = results[results.length - 1].feature.properties.crime;
+                let accidents = results[results.length - 1].feature.properties.accidents;
+                let natcat = results[results.length - 1].feature.properties.natcat;
+
+
                 document.getElementById('risk_summary').innerHTML = description;
+
+                document.getElementById('crime').innerHTML = crime;
+                document.getElementById('accidents').innerHTML = accidents;
+                document.getElementById('natcat').innerHTML = natcat;
+
+
 
                 if(currentBoundary !== description){
                     currentBoundary = description;
@@ -610,10 +621,18 @@
             let features = intermediatePoints.map(point => {
                 let circlePoints = generateCirclePoints({lat: point[0], lng: point[1]}, radius);
 
+                let crime = Math.floor(Math.random() * 11);
+                let accidents = Math.floor(Math.random() * 11);
+                let natcat = Math.floor(Math.random() * 11);
+
                 return {
                     "type": "Feature",
                     "properties": {
-                        "description": `Circle at ${point[0].toFixed(5)}, ${point[1].toFixed(5)}`
+                        "description": `Circle at ${point[0].toFixed(5)}, ${point[1].toFixed(5)}`,
+                        "crime": crime,
+                        "natcat": natcat,
+                        "accidents": accidents
+
                     },
                     "geometry": {
                         "type": "Polygon",
@@ -857,6 +876,9 @@
                     }
                 }
             }).addTo(map);
+
+            console.log("Boundary Data");
+            console.log(boundaryData);
 
             routLoaded = true;
 
