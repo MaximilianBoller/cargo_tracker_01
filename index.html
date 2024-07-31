@@ -212,6 +212,8 @@
         var geoJsonLayer;
         let instructionGeoJsonLayer;
 
+        let currentBoundary = "";
+
         // Function to check if the current location is inside any boundary
         function checkLocationInsideBoundaries(position) {
             var latlng = [position.coords.longitude, position.coords.latitude];
@@ -221,12 +223,25 @@
                 var description = results[0].feature.properties.description;
                 document.getElementById('info').innerHTML = description;
 
-                speakText(description);
+                if(currentBoundary != description){
+                    currentBoundary = description;
+                    speakText(description);
+                }else{
+
+                }
+
 
             } else {
                 document.getElementById('info').innerHTML = 'You are not inside any defined area.';
             }
         }
+
+
+
+
+
+
+        let currentInstruction = "";
 
         function checkLocationInsideInstruction(position) {
             var latlng = [position.coords.longitude, position.coords.latitude];
@@ -237,14 +252,26 @@
                 document.getElementById('info').innerHTML = description;
 
 
+                if(currentInstruction != description){
+                    currentInstruction = description;
+                    speakText(description);
+                }else{
 
-                speakText(description);
+                }
+
 
 
             } else {
                 document.getElementById('info').innerHTML = 'You are not inside any instruction area.';
             }
         }
+
+
+
+
+
+
+
 
 
 
