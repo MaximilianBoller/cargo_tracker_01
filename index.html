@@ -220,7 +220,7 @@
             var results = leafletPip.pointInLayer(latlng, geoJsonLayer);
 
             if (results.length > 0) {
-                var description = results[0].feature.properties.description;
+                var description = results[results.length - 1].feature.properties.description;
                 document.getElementById('info').innerHTML = description;
 
                 if(currentBoundary != description){
@@ -248,7 +248,7 @@
             var results = leafletPip.pointInLayer(latlng, instructionGeoJsonLayer);
 
             if (results.length > 0) {
-                var description = results[0].feature.properties.description;
+                var description = results[results.length - 1].feature.properties.description;
                 document.getElementById('info').innerHTML = description;
 
 
