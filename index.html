@@ -221,6 +221,8 @@
                 var description = results[0].feature.properties.description;
                 document.getElementById('info').innerHTML = description;
 
+                speakText(description);
+
             } else {
                 document.getElementById('info').innerHTML = 'You are not inside any defined area.';
             }
@@ -233,11 +235,23 @@
             if (results.length > 0) {
                 var description = results[0].feature.properties.description;
                 document.getElementById('info').innerHTML = description;
+
+
+
+                speakText(description);
+
+
             } else {
                 document.getElementById('info').innerHTML = 'You are not inside any instruction area.';
             }
         }
 
+
+
+        function speakText(text){
+            let utterance = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(utterance);
+        }
 
 
 
@@ -594,29 +608,6 @@
                     }
                 }
             }).addTo(map);
-
-
-
-/*
-
-            instructionJson.features.forEach(feature => {
-                if (feature.geometry.type === 'Polygon') {
-                    // Extract coordinates and description
-                    let coordinates = feature.geometry.coordinates[0];
-                    let description = feature.properties.description;
-
-                    // Create the polygon on the map
-                    let polygon = L.polygon(coordinates, {
-                        color: 'blue', // Outline color
-                        fillColor: 'blue', // Fill color
-                        fillOpacity: 0.5 // Fill opacity
-                    }).addTo(map);
-
-                    // Bind the popup with the description
-                    polygon.bindPopup(description);
-                }
-            });
-            */
 
             console.log("Draw Instructions");
         }
