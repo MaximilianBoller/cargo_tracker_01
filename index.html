@@ -61,6 +61,7 @@
             z-index: 200;
             height: 2rem;
             width: 2rem;
+            display: none;
         }
 
         #speed{
@@ -68,7 +69,7 @@
             right: .75rem;
             width: 2rem;
             height: 2rem;
-            background-color: red;
+            background-color: #0c46e4;
             color: white;
             position: absolute;
             z-index: 800;
@@ -146,12 +147,11 @@
             width: 100%;
             height: 100%;
             text-align: center;
-            border: solid green 1px;
             margin-top: .5rem;
         }
 
         #risk_summary{
-            border: solid red 1px;
+
             height: 2rem;
             overflow-y: scroll;
         }
@@ -165,7 +165,7 @@
             grid-template-columns: 1;
             grid-template-rows: auto auto;
             height: fit-content;
-            border: solid blue 1px;
+
         }
 
 
@@ -667,7 +667,7 @@
                         console.log(calculateSpeed(myCoordinates[myCoordinates.length - 2]['lat'],myCoordinates[myCoordinates.length - 2]['lng'],  myCoordinates[myCoordinates.length-1]['lat'], myCoordinates[myCoordinates.length-1]['lng']));
 
 
-                        speed.innerText = calculateSpeed(myCoordinates[myCoordinates.length - 2]['lat'],myCoordinates[myCoordinates.length - 2]['lng'],  myCoordinates[myCoordinates.length-1]['lat'], myCoordinates[myCoordinates.length-1]['lng']);
+                        speed.innerText = calculateSpeed(myCoordinates[myCoordinates.length - 2]['lat'],myCoordinates[myCoordinates.length - 2]['lng'],  myCoordinates[myCoordinates.length-1]['lat'], myCoordinates[myCoordinates.length-1]['lng']) + "\nkm/h";
                         //nav.innerText = calculateSpeed(myCoordinates[myCoordinates.length - 2]['lat'],myCoordinates[myCoordinates.length - 2]['lng'],  myCoordinates[myCoordinates.length-1]['lat'], myCoordinates[myCoordinates.length-1]['lng']);
 
                         
