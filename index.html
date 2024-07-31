@@ -11,32 +11,44 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@v0.74.0/dist/L.Control.Locate.min.css" />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
 
     <style>
         body {
             margin: 0;
             padding: 0;
             position: relative;
+
+            font-family: Roboto;
         }
 
         #map {
-            width: 100%;
+            width: 100vw;
             height: 100vh;
             z-index: 99;
         }
 
         #info {
             position: absolute;
-            top: .5rem;
-            right: .5rem;
-            width: calc(50vw);
-            border: solid red 1px;
+            top: .75rem;
+            right: .75rem;
+            width: calc(100vw - 4rem);
             background-color: white;
             z-index: 100;
-            padding: 10px;
+
+            border-radius: .25rem;
+
+            display: grid;
+            grid-template-columns: auto 1fr;
+            overflow: hidden;
+
+
         }
 
-        #nav {
+        #refresh {
             height: 20vh;
             position: absolute;
             bottom: 50vh;
@@ -50,7 +62,7 @@
 
         #speed{
             bottom: 50vh;
-            right: 0;
+            right: .75rem;
             width: 2rem;
             height: 2rem;
             background-color: red;
@@ -58,18 +70,95 @@
             position: absolute;
             z-index: 800;
             padding: .5rem;
+            border-radius: .25rem;
+            text-align: center;
         }
 
         .leaflet-routing-container{
             display: none;
         }
+
+        #risk{
+            position: absolute;
+            bottom: 3rem;
+            left: 0;
+            width: calc(100vw - 1rem);
+            height: 8rem;
+            z-index: 1000;
+            padding: .5rem;
+            background-color: white;
+
+            box-sizing: content-box;
+            transition: bottom .125s ease;
+        }
+
+        #direction_icon{
+            background-color: #0c46e4;
+            width: 4rem;
+            height: 4rem;
+        }
+        #direction_text{
+            padding: .5rem;
+        }
+
+        #nav{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            display: grid;
+            width: 100vw;
+            background-color: #0c46e4;
+            height: 3rem;
+            z-index: 1000;
+        }
+
+        #toggle_risk{
+            background-color: white;
+            height: 3rem;
+            width: 3rem;
+            position: absolute;
+            top: -3rem;
+            right: .75rem;
+            z-index: 1000;
+            border-radius: .25rem .25rem 0 0;
+            text-align: center;
+            color: black;
+        }
+
+
     </style>
 </head>
 
 <body>
-    <div id="info">Info</div>
+    <div id="info">
+        <div id = "direction_icon"></div>
+        <div id = "direction_text"></div>
+    </div>
     <div id="map"></div>
-    <div id="nav">NAV</div>
+    <div id="refresh">refresh</div>
+
+
+
+
+
+    <div id = "risk">
+        
+        <div id = "toggle_risk">
+            R
+        </div>
+
+        <div id = "risk_summary">Summary</div>
+
+        <div id = "risk_indc">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div id = "nav">
+
+    </div>
 
     <div id="speed">0kmh</div>
 
@@ -84,6 +173,57 @@
     <script src="https://unpkg.com/leaflet-control-geocoder@1.13.0/dist/Control.Geocoder.js"></script>
 
     <script>
+
+        let toggleRiskButton = document.getElementById('toggle_risk');
+        let riskPanel = document.getElementById('risk');
+
+
+        let riskToggle = false;
+
+
+            toggleRiskButton.addEventListener('click', function(){
+                console.log("HELLO");
+
+                riskToggle = !riskToggle;
+
+
+                console.log(riskToggle);
+                if(riskToggle == true){
+                    riskPanel.style.bottom = '-6rem';
+                }else{
+                    riskPanel.style.bottom = '3rem';
+                }
+
+
+            });
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Map initialization
         var map = L.map('map').setView([-25.1783, -57.3030], 18);
 
@@ -234,7 +374,7 @@
             } else {
 
                 
-                document.getElementById('info').innerHTML = 'You are not inside any defined area.';
+                document.getElementById('risk_summary').innerHTML = 'You are not inside any defined area.';
             }
         }
 
@@ -263,7 +403,7 @@
 
 
             } else {
-                document.getElementById('info').innerHTML = 'You are not inside any instruction area.';
+                document.getElementById('direction_text').innerHTML = 'You are not inside any instruction area.';
             }
         }
 
@@ -338,7 +478,7 @@
         }
 
 
-        let nav = document.getElementById('nav');
+        let refresh = document.getElementById('refresh');
         let speed = document.getElementById('speed');
 
 
@@ -365,7 +505,7 @@
 
 
                         counter += 1;
-                        nav.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude + " " + "v.004";
+                        refresh.innerText = counter + " " + position.coords.latitude + " " + position.coords.longitude + " " + "v.004";
                         drawMyCoordinates(myCoordinates);
                         speed.innerText = "";
                         console.log(calculateSpeed(myCoordinates[myCoordinates.length - 2]['lat'],myCoordinates[myCoordinates.length - 2]['lng'],  myCoordinates[myCoordinates.length-1]['lat'], myCoordinates[myCoordinates.length-1]['lng']));
